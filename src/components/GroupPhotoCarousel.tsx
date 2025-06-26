@@ -5,19 +5,12 @@ import { LazyImage } from './LazyImage';
 
 interface GroupPhotoCarouselProps {
   photos: string[];
-  title?: string;
-  description?: string;
 }
 
-export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ 
-  photos, 
-  title,
-  description 
-}) => {
+export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ photos }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [validPhotos, setValidPhotos] = useState<string[]>([]);
 
-  // Filter out empty or invalid photo URLs
   useEffect(() => {
     setValidPhotos(photos.filter(photo => 
       photo && typeof photo === 'string' && photo.trim() !== ""
@@ -32,11 +25,10 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({
     setCurrentIndex(prev => (prev === validPhotos.length - 1 ? 0 : prev + 1));
   };
 
-  // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (validPhotos.length <= 1) return;
-      
+
       switch (e.key) {
         case 'ArrowLeft':
           handlePrevious();
@@ -54,22 +46,13 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({
   if (validPhotos.length === 0) {
     return (
       <div className="mb-12 p-8 bg-gray-100 rounded-xl text-center">
-        <p className="text-gray-500">No photos available for this group</p>
+        <p className="text-gray-500">No photos available</p>
       </div>
     );
   }
 
   return (
     <div className="mb-12">
-      {title && (
-        <div className="mb-4 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-          {description && (
-            <p className="text-gray-600 mt-2">{description}</p>
-          )}
-        </div>
-      )}
-      
       <div className="relative rounded-xl overflow-hidden shadow-xl bg-white">
         <div className="aspect-[16/9] max-h-[90vh]">
           <AnimatePresence mode="wait">
@@ -83,7 +66,7 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({
             >
               <LazyImage
                 src={validPhotos[currentIndex]}
-                alt={`${title || 'Group photo'} ${currentIndex + 1}`}
+                alt={`Photo ${currentIndex + 1}`}
                 className="w-full h-full object-cover"
               />
             </motion.div>
