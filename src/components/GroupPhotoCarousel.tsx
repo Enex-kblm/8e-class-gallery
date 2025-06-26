@@ -28,7 +28,7 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, p
       </h2>
       
       <div className="relative rounded-xl overflow-hidden shadow-xl bg-white">
-        <div className={`${isGroupPhoto ? 'aspect-[16/7] max-h-[90vh]' : 'aspect-[19.6/9] max-h-[70vh]'}`}>
+        <div className={`${isGroupPhoto ? 'aspect-[16/9] max-h-[90vh]' : 'aspect-[19.9] max-h-[70vh]'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
