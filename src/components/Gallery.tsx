@@ -58,20 +58,20 @@ export const Gallery: React.FC<GalleryProps> = ({ students }) => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Class 8E Gallery</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Galeri Kelas 8E</h1>
             <p className="text-lg text-gray-600 mb-6">
-              Explore memories from our amazing students
+              Jelajahi kenangan dari siswa-siswi kami yang luar biasa
             </p>
             
             {/* Stats */}
             <div className="flex justify-center space-x-8 mb-6">
               <div className="flex items-center space-x-2 text-gray-600">
                 <Users size={20} />
-                <span className="font-medium">{students.length} Students</span>
+                <span className="font-medium">{students.length} Siswa</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600">
                 <ImageIcon size={20} />
-                <span className="font-medium">{totalPhotos} Photos</span>
+                <span className="font-medium">{totalPhotos} Foto</span>
               </div>
             </div>
 
@@ -80,7 +80,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students }) => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search students..."
+                placeholder="Telusuri siswa..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -101,8 +101,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students }) => {
             <div className="text-gray-400 mb-4">
               <Users size={48} className="mx-auto" />
             </div>
-            <h3 className="text-xl font-medium text-gray-600 mb-2">No students found</h3>
-            <p className="text-gray-500">Try adjusting your search criteria</p>
+            <h3 className="text-xl font-medium text-gray-600 mb-2">Tidak ada siswa yang ditemukan</h3>
           </motion.div>
         ) : (
           <motion.div
