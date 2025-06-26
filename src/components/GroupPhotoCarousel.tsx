@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { LazyImage } from './LazyImage';
 
 interface GroupPhotoCarouselProps {
-  title: string;
   photos: string[];
 }
 
