@@ -19,12 +19,16 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, p
     setCurrentIndex(prev => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
+  const isGroupPhoto = title.toLowerCase().includes("kenangan kelas");
+
   return (
-    <div className="mb-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">{title}</h2>
+    <div className={`${isGroupPhoto ? 'mb-16' : 'mb-12'}`}>
+      <h2 className={`font-bold text-gray-900 mb-4 ${isGroupPhoto ? 'text-3xl' : 'text-2xl'}`}>
+        {title}
+      </h2>
       
       <div className="relative rounded-xl overflow-hidden shadow-xl bg-white">
-        <div className="aspect-[19.6/9] max-h-[70vh]">
+        <div className={`${isGroupPhoto ? 'aspect-[16/7] max-h-[90vh]' : 'aspect-[19.6/9] max-h-[70vh]'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
