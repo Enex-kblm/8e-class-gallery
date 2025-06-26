@@ -132,7 +132,7 @@ export const DeveloperInfo: React.FC = () => {
               <span>Email Me</span>
             </button>
             <a
-              href="https://github.com/Enex-kblm/Gallery-8E"
+              href="https://github.com/Enex-kblm/8e-class-gallery.git"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200"
