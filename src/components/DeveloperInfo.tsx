@@ -40,8 +40,7 @@ export const DeveloperInfo: React.FC = () => {
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">About the Developer</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            This gallery website was crafted with passion and attention to detail, 
-            showcasing the memories of Class 8E students through modern web technologies.
+            Situs web galeri ini dibuat dengan penuh semangat dan perhatian terhadap detail, memamerkan kenangan siswa Kelas 8E melalui teknologi web modern.
           </p>
         </motion.div>
 
@@ -56,9 +55,9 @@ export const DeveloperInfo: React.FC = () => {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Project Overview</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
-                The Class 8E Gallery is a modern, responsive web application designed to showcase 
-                student photos in an elegant and user-friendly interface. Built with performance 
-                and user experience as top priorities.
+                Galeri Kelas 8E adalah aplikasi web modern dan responsif yang dirancang untuk memamerkan 
+foto siswa dalam antarmuka yang elegan dan mudah digunakan. Dibuat dengan mengutamakan kinerja 
+dan pengalaman pengguna.
               </p>
               
               <div className="space-y-3">
@@ -123,14 +122,10 @@ export const DeveloperInfo: React.FC = () => {
       >
         <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
         <p className="mb-6 opacity-90">
-          Interested in similar projects or have questions about this gallery?
+          Tertarik dengan proyek serupa atau memiliki pertanyaan tentang galeri ini?
         </p>
 
         <div className="flex justify-center space-x-4">
-          <button className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200">
-            <Mail size={20} />
-            <span>Email Me</span>
-          </button>
           <a
             href="https://github.com/Enex-kblm/8e-class-gallery.git"
             target="_blank"
