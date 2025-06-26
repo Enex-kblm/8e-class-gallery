@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Users, Image as ImageIcon } from 'lucide-react';
-import { Student } from '../types';
+import { Student, GroupPhoto } from '../types';
 import { StudentCard } from './StudentCard';
 import { PhotoModal } from './PhotoModal';
+import { GroupPhotoCarousel } from './GroupPhotoCarousel';
 
 interface GalleryProps {
   students: Student[];
+  groupPhotos: GroupPhoto[];
 }
 
-export const Gallery: React.FC<GalleryProps> = ({ students }) => {
+export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -88,6 +90,17 @@ export const Gallery: React.FC<GalleryProps> = ({ students }) => {
             </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Carousel Foto Kelompok */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {groupPhotos.map(group => (
+          <GroupPhotoCarousel 
+            key={group.id}
+            title={group.title}
+            photos={group.photos}
+          />
+        ))}
       </div>
 
       {/* Gallery Grid */}
