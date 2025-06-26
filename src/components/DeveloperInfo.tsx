@@ -115,33 +115,33 @@ export const DeveloperInfo: React.FC = () => {
         </motion.div>
 
         {/* Contact Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-8 text-center text-white"
-        >
-          <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
-          <p className="mb-6 opacity-90">
-            Interested in similar projects or have questions about this gallery?
-          </p>
-          
-          <div className="flex justify-center space-x-4">
-            <button className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200">
-              <Mail size={20} />
-              <span>Email Me</span>
-            </button>
-            <a
-              href="https://github.com/Enex-kblm/Gallery-8E"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200"
-            >
-              <Github size={20} />
-              <span>View Code</span>
-            </a>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-8 text-center text-white"
+      >
+        <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
+        <p className="mb-6 opacity-90">
+          Interested in similar projects or have questions about this gallery?
+        </p>
 
-        </motion.div>
+        <div className="flex justify-center space-x-4">
+          <button className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200">
+            <Mail size={20} />
+            <span>Email Me</span>
+          </button>
+          <a
+            href="https://github.com/Enex-kblm/8e-class-gallery.git"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200"
+          >
+            <Github size={20} />
+            <span>View Code</span>
+          </a>
+        </div>
+      </motion.div>
 
         {/* Footer */}
         <motion.div
@@ -153,9 +153,6 @@ export const DeveloperInfo: React.FC = () => {
           <p>© 2024-2025 Class 8E Gallery. Made with ❤️ for preserving memories.</p>
         </motion.div>
       </div>
-    </div>
-  );
-};  </div>
     </div>
   );
 };
