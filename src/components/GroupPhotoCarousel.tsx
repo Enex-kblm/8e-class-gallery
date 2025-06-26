@@ -7,7 +7,7 @@ interface GroupPhotoCarouselProps {
   photos: string[];
 }
 
-export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, photos }) => {
+export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ photos }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
@@ -18,16 +18,13 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, p
     setCurrentIndex(prev => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
-  const isGroupPhoto = title.toLowerCase().includes("kenangan kelas");
+  // Filter foto kosong (""), agar tidak error
+  const validPhotos = photos.filter((photo) => photo.trim() !== "");
 
   return (
-    <div className={`${isGroupPhoto ? 'mb-16' : 'mb-12'}`}>
-      <h2 className={`font-bold text-gray-900 mb-4 ${isGroupPhoto ? 'text-3xl' : 'text-2xl'}`}>
-        {title}
-      </h2>
-      
+    <div className="mb-12">
       <div className="relative rounded-xl overflow-hidden shadow-xl bg-white">
-        <div className={`${isGroupPhoto ? 'aspect-[16/9] max-h-[90vh]' : 'aspect-[19.9] max-h-[70vh]'}`}>
+        <div className="aspect-[16/9] max-h-[90vh]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
@@ -38,15 +35,15 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, p
               className="w-full h-full"
             >
               <LazyImage
-                src={photos[currentIndex]}
-                alt={`${title} - ${currentIndex + 1}`}
+                src={validPhotos[currentIndex]}
+                alt={`Photo ${currentIndex + 1}`}
                 className="w-full h-full object-cover"
               />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {photos.length > 1 && (
+        {validPhotos.length > 1 && (
           <>
             <button 
               onClick={handlePrevious}
@@ -66,7 +63,7 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ title, p
         )}
 
         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-          {currentIndex + 1} / {photos.length}
+          {currentIndex + 1} / {validPhotos.length}
         </div>
       </div>
     </div>
