@@ -92,16 +92,18 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         </div>
       </div>
 
-      {/* Carousel Foto Kelompok */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {groupPhotos.map(group => (
-          <GroupPhotoCarousel 
-            key={group.id}
-            title={group.title}
-            photos={group.photos}
-          />
-        ))}
-      </div>
+      {/* Tampilkan carousel hanya saat tidak ada pencarian */}
+      {!searchQuery && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {groupPhotos.map(group => (
+            <GroupPhotoCarousel 
+              key={group.id}
+              title={group.title}
+              photos={group.photos}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Gallery Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -120,7 +122,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6"
           >
             {filteredStudents.map((student, index) => (
               <StudentCard
