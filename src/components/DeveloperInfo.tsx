@@ -77,7 +77,7 @@ dan pengalaman pengguna.
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Technologies Used</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Development Stack</h3>
               <div className="grid grid-cols-2 gap-2">
                 {technologies.map((tech) => (
                   <span
