@@ -12,17 +12,17 @@ export const DeveloperInfo: React.FC = () => {
     {
       icon: <Code size={24} />,
       title: 'Modern Architecture',
-      description: 'Built with React, TypeScript, and modern web standards for optimal performance and maintainability.'
+      description: 'Dibangun dengan React, TypeScript, dan standar web modern untuk kinerja dan pemeliharaan yang optimal.'
     },
     {
       icon: <Coffee size={24} />,
       title: 'Performance Optimized',
-      description: 'Implements lazy loading, image optimization, and efficient rendering for smooth user experience.'
+      description: 'Menerapkan pemuatan lambat, pengoptimalan gambar, dan perenderan efisien untuk pengalaman pengguna yang lancar.'
     },
     {
       icon: <Heart size={24} />,
       title: 'User-Centered Design',
-      description: 'Carefully crafted UI/UX with accessibility in mind and responsive design for all devices.'
+      description: 'UI/UX yang dibuat dengan cermat dengan mempertimbangkan aksesibilitas dan desain responsif untuk semua perangkat.'
     }
   ];
 
