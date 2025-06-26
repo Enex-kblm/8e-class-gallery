@@ -30,9 +30,6 @@ export const DeveloperInfo: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
-         
-        {/* Header Section */}
-        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
@@ -122,7 +119,7 @@ export const DeveloperInfo: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-8 text-center text-white mb-12"
+          className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-xl p-8 text-center text-white"
         >
           <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
           <p className="mb-6 opacity-90">
@@ -135,7 +132,7 @@ export const DeveloperInfo: React.FC = () => {
               <span>Email Me</span>
             </button>
             <a
-              href="https://github.com/Enex-kblm/8e-class-gallery"
+              href="https://github.com/Enex-kblm/Gallery-8E"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200"
@@ -143,7 +140,7 @@ export const DeveloperInfo: React.FC = () => {
               <Github size={20} />
               <span>View Code</span>
             </a>
-          </div>
+
         </motion.div>
 
         {/* Footer */}
@@ -156,6 +153,9 @@ export const DeveloperInfo: React.FC = () => {
           <p>© 2024-2025 Class 8E Gallery. Made with ❤️ for preserving memories.</p>
         </motion.div>
       </div>
+    </div>
+  );
+};  </div>
     </div>
   );
 };
