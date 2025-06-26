@@ -18,7 +18,6 @@ export const GroupPhotoCarousel: React.FC<GroupPhotoCarouselProps> = ({ photos }
     setCurrentIndex(prev => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
-  // Filter foto kosong (""), agar tidak error
   const validPhotos = photos.filter((photo) => photo.trim() !== "");
 
   return (
