@@ -131,11 +131,16 @@ export const DeveloperInfo: React.FC = () => {
               <Mail size={20} />
               <span>Email Me</span>
             </button>
-            <button className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200">
+            <a
+              href="https://github.com/Enex-kblm/Gallery-8E"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-6 py-3 rounded-lg transition-colors duration-200"
+            >
               <Github size={20} />
               <span>View Code</span>
-            </button>
-          </div>
+            </a>
+
         </motion.div>
 
         {/* Footer */}
@@ -145,7 +150,7 @@ export const DeveloperInfo: React.FC = () => {
           transition={{ delay: 0.8 }}
           className="text-center mt-12 text-gray-500"
         >
-          <p>© 2024 Class 8E Gallery. Made with ❤️ for preserving memories.</p>
+          <p>© 2024-2025 Class 8E Gallery. Made with ❤️ for preserving memories.</p>
         </motion.div>
       </div>
     </div>
