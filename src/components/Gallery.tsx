@@ -5,6 +5,8 @@ import { Student, GroupPhoto } from '../types';
 import { StudentCard } from './StudentCard';
 import { PhotoModal } from './PhotoModal';
 import { GroupPhotoCarousel } from './GroupPhotoCarousel';
+import { StudentHorizontalScroll } from './StudentHorizontalScroll';
+import featuredStudentsData from '../data/featuredStudents.json'; // Import data baru
 
 interface GalleryProps {
   students: Student[];
@@ -92,16 +94,21 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         </div>
       </div>
 
-      {/* Tampilkan carousel hanya saat tidak ada pencarian */}
+      {/* Tampilkan carousel dan horizontal scroll hanya saat tidak ada pencarian */}
       {!searchQuery && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {groupPhotos.map(group => (
             <GroupPhotoCarousel 
               key={group.id}
-              title={group.title}
               photos={group.photos}
             />
           ))}
+          
+          {/* Horizontal Student Scroll dengan data baru */}
+          <StudentHorizontalScroll 
+            students={featuredStudentsData.featuredStudents} 
+            onStudentClick={handleStudentClick} 
+          />
         </div>
       )}
 

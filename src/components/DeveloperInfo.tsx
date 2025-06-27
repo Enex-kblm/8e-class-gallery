@@ -15,6 +15,11 @@ export const DeveloperInfo: React.FC = () => {
       description: 'Dibangun dengan React, TypeScript, dan standar web modern untuk kinerja dan pemeliharaan yang optimal.'
     },
     {
+      icon: <Coffee size={24} />,
+      title: 'Performance Optimized',
+      description: 'Menerapkan pemuatan lambat, pengoptimalan gambar, dan perenderan efisien untuk pengalaman pengguna yang lancar.'
+    },
+    {
       icon: <Heart size={24} />,
       title: 'User-Centered Design',
       description: 'UI/UX yang dibuat dengan cermat dengan mempertimbangkan aksesibilitas dan desain responsif untuk semua perangkat.'
@@ -59,6 +64,10 @@ dan pengalaman pengguna.
                 <div className="flex items-center space-x-3 text-gray-700">
                   <Globe size={20} className="text-indigo-600" />
                   <span>Responsive Design</span>
+                </div>
+                <div className="flex items-center space-x-3 text-gray-700">
+                  <Mail size={20} className="text-indigo-600" />
+                  <span>Optimized Performance</span>
                 </div>
                 <div className="flex items-center space-x-3 text-gray-700">
                   <Github size={20} className="text-indigo-600" />
