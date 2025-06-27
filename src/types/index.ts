@@ -1,8 +1,9 @@
-// Tetap pakai ini untuk data siswa
+
 export interface Student {
   id: number;
   name: string;
   photos: string[];
+  isFavorite?: boolean; // Tambah properti baru
 }
 
 export interface Hori {

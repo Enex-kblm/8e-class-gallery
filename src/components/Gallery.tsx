@@ -6,7 +6,7 @@ import { StudentCard } from './StudentCard';
 import { PhotoModal } from './PhotoModal';
 import { GroupPhotoCarousel } from './GroupPhotoCarousel';
 import { StudentHorizontalScroll } from './StudentHorizontalScroll';
-import featuredStudentsData from '../data/featuredStudents.json'; // Import data baru
+import featuredStudentsData from '../data/featuredStudents.json';
 
 interface GalleryProps {
   students: Student[];
@@ -17,6 +17,10 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [favorites, setFavorites] = useState<number[]>(() => {
+    const savedFavorites = localStorage.getItem('favorites');
+    return savedFavorites ? JSON.parse(savedFavorites) : [];
+  });
 
   const filteredStudents = useMemo(() => {
     return students.filter(student =>
@@ -36,7 +40,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
 
   const handlePreviousPhoto = () => {
     if (selectedStudent) {
-      setCurrentPhotoIndex(prev => 
+      setCurrentPhotoIndex(prev =>
         prev === 0 ? selectedStudent.photos.length - 1 : prev - 1
       );
     }
@@ -44,10 +48,21 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
 
   const handleNextPhoto = () => {
     if (selectedStudent) {
-      setCurrentPhotoIndex(prev => 
+      setCurrentPhotoIndex(prev =>
         prev === selectedStudent.photos.length - 1 ? 0 : prev + 1
       );
     }
+  };
+
+  const toggleFavorite = (studentId: number) => {
+    setFavorites(prev => {
+      const newFavorites = prev.includes(studentId)
+        ? prev.filter(id => id !== studentId)
+        : [...prev, studentId];
+
+      localStorage.setItem('favorites', JSON.stringify(newFavorites));
+      return newFavorites;
+    });
   };
 
   const totalPhotos = students.reduce((total, student) => total + student.photos.length, 0);
@@ -66,8 +81,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             <p className="text-lg text-gray-600 mb-6">
               Jelajahi kenangan dari siswa-siswi kami yang luar biasa
             </p>
-            
-            {/* Stats */}
+
             <div className="flex justify-center space-x-8 mb-6">
               <div className="flex items-center space-x-2 text-gray-600">
                 <Users size={20} />
@@ -79,7 +93,6 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
               </div>
             </div>
 
-            {/* Search */}
             <div className="max-w-md mx-auto relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -94,25 +107,22 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         </div>
       </div>
 
-      {/* Tampilkan carousel dan horizontal scroll hanya saat tidak ada pencarian */}
       {!searchQuery && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {groupPhotos.map(group => (
-            <GroupPhotoCarousel 
+            <GroupPhotoCarousel
               key={group.id}
               photos={group.photos}
             />
           ))}
-          
-          {/* Horizontal Student Scroll dengan data baru */}
-          <StudentHorizontalScroll 
-            students={featuredStudentsData.featuredStudents} 
-            onStudentClick={handleStudentClick} 
+
+          <StudentHorizontalScroll
+            students={featuredStudentsData.featuredStudents}
+            onStudentClick={handleStudentClick}
           />
         </div>
       )}
 
-      {/* Gallery Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredStudents.length === 0 ? (
           <motion.div
@@ -134,15 +144,15 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             {filteredStudents.map((student, index) => (
               <StudentCard
                 key={student.id}
-                student={student}
+                student={{ ...student, isFavorite: favorites.includes(student.id) }}
                 index={index}
                 onClick={() => handleStudentClick(student)}
+                onToggleFavorite={() => toggleFavorite(student.id)}
               />
             ))}
           </motion.div>
         )}
 
-        {/* Results count */}
         {searchQuery && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -154,7 +164,6 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         )}
       </div>
 
-      {/* Photo Modal */}
       <PhotoModal
         isOpen={selectedStudent !== null}
         onClose={handleCloseModal}

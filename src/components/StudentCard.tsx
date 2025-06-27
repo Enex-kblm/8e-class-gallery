@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Images } from 'lucide-react';
+import { Camera, Images, Heart } from 'lucide-react';
 import { Student } from '../types';
 import { LazyImage } from './LazyImage';
 
@@ -8,9 +8,23 @@ interface StudentCardProps {
   student: Student;
   index: number;
   onClick: () => void;
+  onToggleFavorite: (studentId: number) => void;
 }
 
-export const StudentCard: React.FC<StudentCardProps> = ({ student, index, onClick }) => {
+export const StudentCard: React.FC<StudentCardProps> = ({ 
+  student, 
+  index, 
+  onClick,
+  onToggleFavorite
+}) => {
+  const [isFavorite, setIsFavorite] = useState(student.isFavorite || false);
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+    onToggleFavorite(student.id);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -20,7 +34,6 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, index, onClic
       onClick={onClick}
     >
       <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-        {/* Profile image */}
         <div className="aspect-square relative overflow-hidden">
           <LazyImage
             src={student.photos[0]}
@@ -28,7 +41,6 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, index, onClic
             className="w-full h-full group-hover:scale-105 transition-transform duration-500"
           />
           
-          {/* Overlay with photo count */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="absolute bottom-3 left-3 flex items-center space-x-1 text-white">
               <Images size={16} />
@@ -36,13 +48,22 @@ export const StudentCard: React.FC<StudentCardProps> = ({ student, index, onClic
             </div>
           </div>
 
-          {/* Camera icon overlay */}
           <div className="absolute top-3 right-3 p-2 bg-white/20 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <Camera size={16} className="text-white" />
           </div>
+
+          {/* Tombol favorit */}
+          <button 
+            onClick={handleToggleFavorite}
+            className="absolute top-3 left-3 p-2 bg-white/20 backdrop-blur-sm rounded-full"
+          >
+            <Heart 
+              size={16} 
+              className={isFavorite ? "text-red-500 fill-red-500" : "text-white"} 
+            />
+          </button>
         </div>
 
-        {/* Student info */}
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 text-center group-hover:text-blue-600 transition-colors duration-200">
             {student.name}
