@@ -40,7 +40,6 @@ export const StudentHorizontalScroll: React.FC<StudentHorizontalScrollProps> = (
   return (
     <div className="relative mb-12">
       <div className="flex justify-between items-center mb-4 px-4 sm:px-6 lg:px-8">
-        <h3 className="text-xl font-bold text-gray-900">Featured Students</h3>
         <div className="flex space-x-2">
           <button 
             onClick={() => handleScroll('left')}
