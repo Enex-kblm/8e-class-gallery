@@ -8,8 +8,21 @@ interface LazyImageProps {
   onClick?: () => void;
 }
 
+// Fungsi untuk validasi URL
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export const LazyImage: React.FC<LazyImageProps> = ({ src, alt, className = '', onClick }) => {
   const { imageSrc, isLoaded, isError, imgRef } = useLazyImage(src);
+
+  // Optimisasi jika URL valid
+  const optimizedSrc = isValidUrl(imageSrc) ? `${imageSrc}?w=400&q=80` : imageSrc;
 
   return (
     <div 
@@ -36,7 +49,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({ src, alt, className = '', 
       
       {isLoaded && (
         <img
-          src={imageSrc}
+          src={optimizedSrc}
           alt={alt}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />
