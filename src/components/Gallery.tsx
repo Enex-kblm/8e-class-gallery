@@ -166,7 +166,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             className="text-center text-gray-500 mt-8"
           >
             Showing {filteredStudents.length} of {students.length} students
-          </motion.p>
+          </p>
         )}
       </div>
 
