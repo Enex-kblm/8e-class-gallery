@@ -6,7 +6,6 @@ import { StudentCard } from './StudentCard';
 import { PhotoModal } from './PhotoModal';
 import { GroupPhotoCarousel } from './GroupPhotoCarousel';
 import { StudentHorizontalScroll } from './StudentHorizontalScroll';
-import { PhotoStatsDisplay } from './PhotoStatsDisplay';
 import featuredStudentsData from '../data/featuredStudents.json';
 
 interface GalleryProps {
@@ -110,11 +109,6 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
 
       {!searchQuery && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Statistics Display */}
-          <div className="mb-8">
-            <PhotoStatsDisplay className="max-w-sm mx-auto" />
-          </div>
-
           {groupPhotos.map(group => (
             <GroupPhotoCarousel
               key={group.id}
@@ -166,7 +160,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             className="text-center text-gray-500 mt-8"
           >
             Showing {filteredStudents.length} of {students.length} students
-          </p>
+          </motion.p>
         )}
       </div>
 
@@ -176,7 +170,6 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         photos={selectedStudent?.photos || []}
         currentIndex={currentPhotoIndex}
         studentName={selectedStudent?.name || ''}
-        studentId={selectedStudent?.id || 0}
         onPrevious={handlePreviousPhoto}
         onNext={handleNextPhoto}
       />

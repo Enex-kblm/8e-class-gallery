@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { LazyImage } from './LazyImage';
-import { PhotoInteractionButtons } from './PhotoInteractionButtons';
 
 interface PhotoModalProps {
   isOpen: boolean;
@@ -10,7 +9,6 @@ interface PhotoModalProps {
   photos: string[];
   currentIndex: number;
   studentName: string;
-  studentId: number;
   onPrevious: () => void;
   onNext: () => void;
 }
@@ -21,12 +19,9 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
   photos,
   currentIndex,
   studentName,
-  studentId,
   onPrevious,
   onNext,
 }) => {
-  const [showInfo, setShowInfo] = useState(false);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
@@ -41,16 +36,12 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
         case 'ArrowRight':
           onNext();
           break;
-        case 'i':
-        case 'I':
-          setShowInfo(!showInfo);
-          break;
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, onPrevious, onNext, showInfo]);
+  }, [isOpen, onClose, onPrevious, onNext]);
 
   useEffect(() => {
     if (isOpen) {
@@ -81,24 +72,13 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
             className="relative max-w-4xl max-h-[90vh] w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Top Controls */}
-            <div className="absolute top-4 left-4 right-4 z-10 flex justify-between items-center">
-              <button
-                onClick={() => setShowInfo(!showInfo)}
-                className="p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                aria-label="Toggle photo information"
-              >
-                <Info size={24} />
-              </button>
-              
-              <button
-                onClick={onClose}
-                className="p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                aria-label="Close modal"
-              >
-                <X size={24} />
-              </button>
-            </div>
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
 
             {/* Navigation buttons */}
             {photos.length > 1 && (
@@ -106,14 +86,12 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
                 <button
                   onClick={onPrevious}
                   className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                  aria-label="Previous photo"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   onClick={onNext}
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                  aria-label="Next photo"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -130,51 +108,18 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
                 />
               </div>
               
-              {/* Photo info overlay */}
-              <AnimatePresence>
-                {showInfo && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white"
-                  >
-                    <h3 className="text-xl font-semibold mb-2">{studentName}</h3>
-                    <p className="text-sm opacity-90 mb-4">
-                      Photo {currentIndex + 1} of {photos.length} • Class 8E
-                    </p>
-                    
-                    <PhotoInteractionButtons
-                      photoUrl={photos[currentIndex]}
-                      studentId={studentId}
-                      studentName={studentName}
-                      showLabels={true}
-                      className="justify-start"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Bottom controls when info is hidden */}
-              {!showInfo && (
-                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-                  <div className="text-white bg-black/50 px-3 py-1 rounded-full text-sm">
-                    {currentIndex + 1} / {photos.length}
-                  </div>
-                  
-                  <PhotoInteractionButtons
-                    photoUrl={photos[currentIndex]}
-                    studentId={studentId}
-                    studentName={studentName}
-                    className="bg-black/50 rounded-lg p-2"
-                  />
-                </div>
-              )}
+              {/* Photo info */}
+              <div className="p-4 bg-white">
+                <h3 className="text-lg font-semibold text-gray-900">{studentName}</h3>
+                <p className="text-sm text-gray-500">
+                  Photo {currentIndex + 1} of {photos.length}
+                </p>
+              </div>
 
               {/* Thumbnail navigation */}
               {photos.length > 1 && (
-                <div className="p-4 bg-gray-50 border-t max-h-32 overflow-y-auto">
-                  <div className="flex space-x-2 overflow-x-auto pb-2">
+                <div className="p-4 bg-gray-50 border-t">
+                  <div className="flex space-x-2 overflow-x-auto">
                     {photos.map((photo, index) => (
                       <button
                         key={index}
@@ -182,7 +127,6 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
                         className={`flex-shrink-0 w-16 h-20 rounded overflow-hidden border-2 transition-colors ${
                           index === currentIndex ? 'border-blue-500' : 'border-gray-200'
                         }`}
-                        aria-label={`View photo ${index + 1}`}
                       >
                         <LazyImage
                           src={photo}

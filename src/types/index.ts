@@ -1,8 +1,9 @@
+
 export interface Student {
   id: number;
   name: string;
   photos: string[];
-  isFavorite?: boolean;
+  isFavorite?: boolean; // Tambah properti baru
 }
 
 export interface Hori {
@@ -25,19 +26,4 @@ export interface StudentsData {
 export interface HorizontalScrollItem {
   id: string;
   image: string;
-}
-
-export interface PhotoInteraction {
-  id: string;
-  photoId: string;
-  userId: string;
-  type: 'like' | 'download';
-  createdAt: Date;
-}
-
-export interface PhotoStats {
-  photoId: string;
-  likeCount: number;
-  downloadCount: number;
-  isLiked: boolean;
 }
