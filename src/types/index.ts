@@ -27,17 +27,17 @@ export interface HorizontalScrollItem {
   image: string;
 }
 
+export interface PhotoInteraction {
+  id: string;
+  photoId: string;
+  userId: string;
+  type: 'like' | 'download';
+  createdAt: Date;
+}
+
 export interface PhotoStats {
   photoId: string;
   likeCount: number;
   downloadCount: number;
   isLiked: boolean;
-}
-
-export interface LocalPhotoData {
-  [photoId: string]: {
-    likes: number;
-    downloads: number;
-    likedBy: string[];
-  };
 }

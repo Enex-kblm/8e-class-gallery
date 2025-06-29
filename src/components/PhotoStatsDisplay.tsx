@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Download, TrendingUp } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface PhotoStatsDisplayProps {
   className?: string;
@@ -11,8 +12,8 @@ interface GlobalStats {
   totalDownloads: number;
   totalPhotos: number;
   mostLikedPhoto: {
-    photoId: string;
-    likes: number;
+    student_name: string;
+    like_count: number;
   } | null;
 }
 
@@ -27,35 +28,27 @@ export const PhotoStatsDisplay: React.FC<PhotoStatsDisplayProps> = ({ className 
 
   useEffect(() => {
     loadGlobalStats();
-    
-    // Update stats every 5 seconds to reflect changes
-    const interval = setInterval(loadGlobalStats, 5000);
-    return () => clearInterval(interval);
   }, []);
 
-  const loadGlobalStats = () => {
+  const loadGlobalStats = async () => {
     try {
       setIsLoading(true);
 
-      const data = localStorage.getItem('photo_interactions');
-      const allData = data ? JSON.parse(data) : {};
+      // Get total stats
+      const { data: statsData, error: statsError } = await supabase
+        .from('photo_stats')
+        .select('like_count, download_count, student_name')
+        .order('like_count', { ascending: false });
 
-      let totalLikes = 0;
-      let totalDownloads = 0;
-      let mostLikedPhoto: { photoId: string; likes: number } | null = null;
+      if (statsError) throw statsError;
 
-      Object.entries(allData).forEach(([photoId, photoData]: [string, any]) => {
-        totalLikes += photoData.likes || 0;
-        totalDownloads += photoData.downloads || 0;
-
-        if (!mostLikedPhoto || photoData.likes > mostLikedPhoto.likes) {
-          if (photoData.likes > 0) {
-            mostLikedPhoto = { photoId, likes: photoData.likes };
-          }
-        }
-      });
-
-      const totalPhotos = Object.keys(allData).length;
+      const totalLikes = statsData?.reduce((sum, photo) => sum + photo.like_count, 0) || 0;
+      const totalDownloads = statsData?.reduce((sum, photo) => sum + photo.download_count, 0) || 0;
+      const totalPhotos = statsData?.length || 0;
+      const mostLikedPhoto = statsData?.[0]?.like_count > 0 ? {
+        student_name: statsData[0].student_name,
+        like_count: statsData[0].like_count
+      } : null;
 
       setStats({
         totalLikes,
@@ -110,17 +103,15 @@ export const PhotoStatsDisplay: React.FC<PhotoStatsDisplayProps> = ({ className 
         </div>
       </div>
 
-      {stats.totalPhotos > 0 && (
+      {stats.mostLikedPhoto && (
         <div className="pt-3 border-t border-gray-100">
-          <p className="text-xs text-gray-500 mb-1">Active Photos</p>
-          <p className="text-sm font-medium text-gray-900">
-            {stats.totalPhotos} photos with interactions
+          <p className="text-xs text-gray-500 mb-1">Most Popular</p>
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {stats.mostLikedPhoto.student_name}
           </p>
-          {stats.mostLikedPhoto && (
-            <p className="text-xs text-gray-500 mt-1">
-              Most liked: {stats.mostLikedPhoto.likes} likes
-            </p>
-          )}
+          <p className="text-xs text-gray-500">
+            {stats.mostLikedPhoto.like_count} likes
+          </p>
         </div>
       )}
     </motion.div>
