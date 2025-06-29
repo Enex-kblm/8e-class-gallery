@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { supabase, getSessionId } from '../lib/supabase';
 
 export interface PhotoStats {
   id: string;
@@ -7,6 +6,31 @@ export interface PhotoStats {
   downloadCount: number;
   isLiked: boolean;
 }
+
+// Generate a unique session ID for the user
+const getSessionId = (): string => {
+  let sessionId = localStorage.getItem('gallery_session_id');
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('gallery_session_id', sessionId);
+  }
+  return sessionId;
+};
+
+// Get photo data from localStorage
+const getPhotoData = (photoId: string) => {
+  const data = localStorage.getItem('photo_interactions');
+  const allData = data ? JSON.parse(data) : {};
+  return allData[photoId] || { likes: 0, downloads: 0, likedBy: [] };
+};
+
+// Save photo data to localStorage
+const savePhotoData = (photoId: string, photoData: any) => {
+  const data = localStorage.getItem('photo_interactions');
+  const allData = data ? JSON.parse(data) : {};
+  allData[photoId] = photoData;
+  localStorage.setItem('photo_interactions', JSON.stringify(allData));
+};
 
 export const usePhotoInteractions = (photoId: string, studentId: number, photoUrl: string) => {
   const [stats, setStats] = useState<PhotoStats>({
@@ -25,70 +49,18 @@ export const usePhotoInteractions = (photoId: string, studentId: number, photoUr
     loadPhotoStats();
   }, [photoId]);
 
-  const loadPhotoStats = async () => {
+  const loadPhotoStats = () => {
     try {
-      setIsLoading(true);
-      
-      // First, ensure the photo exists in the database
-      await ensurePhotoExists();
-      
-      // Get photo stats
-      const { data: photoData, error: photoError } = await supabase
-        .from('photo_stats')
-        .select('*')
-        .eq('student_id', studentId)
-        .eq('url', photoUrl)
-        .single();
-
-      if (photoError && photoError.code !== 'PGRST116') {
-        throw photoError;
-      }
-
-      // Check if user has liked this photo
-      const { data: likeData, error: likeError } = await supabase
-        .from('photo_likes')
-        .select('id')
-        .eq('photo_id', photoData?.id || photoId)
-        .eq('session_id', sessionId)
-        .single();
-
-      if (likeError && likeError.code !== 'PGRST116') {
-        console.warn('Error checking like status:', likeError);
-      }
-
+      const photoData = getPhotoData(photoId);
       setStats({
-        id: photoData?.id || photoId,
-        likeCount: photoData?.like_count || 0,
-        downloadCount: photoData?.download_count || 0,
-        isLiked: !!likeData
+        id: photoId,
+        likeCount: photoData.likes,
+        downloadCount: photoData.downloads,
+        isLiked: photoData.likedBy.includes(sessionId)
       });
     } catch (err) {
       console.error('Error loading photo stats:', err);
       setError('Failed to load photo statistics');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const ensurePhotoExists = async () => {
-    const { data: existingPhoto } = await supabase
-      .from('photos')
-      .select('id')
-      .eq('student_id', studentId)
-      .eq('url', photoUrl)
-      .single();
-
-    if (!existingPhoto) {
-      const filename = photoUrl.split('/').pop() || `student_${studentId}_photo.jpg`;
-      await supabase
-        .from('photos')
-        .insert({
-          student_id: studentId,
-          student_name: `Student ${studentId}`,
-          url: photoUrl,
-          filename,
-          alt_text: `Photo of Student ${studentId}`
-        });
     }
   };
 
@@ -97,52 +69,29 @@ export const usePhotoInteractions = (photoId: string, studentId: number, photoUr
       setIsLoading(true);
       setError(null);
 
-      await ensurePhotoExists();
+      const photoData = getPhotoData(photoId);
+      const isCurrentlyLiked = photoData.likedBy.includes(sessionId);
 
-      // Get the photo ID
-      const { data: photoData } = await supabase
-        .from('photos')
-        .select('id')
-        .eq('student_id', studentId)
-        .eq('url', photoUrl)
-        .single();
-
-      if (!photoData) {
-        throw new Error('Photo not found');
-      }
-
-      if (stats.isLiked) {
+      if (isCurrentlyLiked) {
         // Unlike
-        const { error } = await supabase
-          .from('photo_likes')
-          .delete()
-          .eq('photo_id', photoData.id)
-          .eq('session_id', sessionId);
-
-        if (error) throw error;
-
-        setStats(prev => ({
-          ...prev,
-          likeCount: Math.max(0, prev.likeCount - 1),
-          isLiked: false
-        }));
+        photoData.likes = Math.max(0, photoData.likes - 1);
+        photoData.likedBy = photoData.likedBy.filter((id: string) => id !== sessionId);
       } else {
         // Like
-        const { error } = await supabase
-          .from('photo_likes')
-          .insert({
-            photo_id: photoData.id,
-            session_id: sessionId
-          });
-
-        if (error) throw error;
-
-        setStats(prev => ({
-          ...prev,
-          likeCount: prev.likeCount + 1,
-          isLiked: true
-        }));
+        photoData.likes += 1;
+        photoData.likedBy.push(sessionId);
       }
+
+      savePhotoData(photoId, photoData);
+
+      setStats(prev => ({
+        ...prev,
+        likeCount: photoData.likes,
+        isLiked: !isCurrentlyLiked
+      }));
+
+      // Simulate network delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 200));
     } catch (err) {
       console.error('Error toggling like:', err);
       setError('Failed to update like status');
@@ -156,36 +105,20 @@ export const usePhotoInteractions = (photoId: string, studentId: number, photoUr
       setIsLoading(true);
       setError(null);
 
-      await ensurePhotoExists();
-
-      // Get the photo ID
-      const { data: photoData } = await supabase
-        .from('photos')
-        .select('id, filename')
-        .eq('student_id', studentId)
-        .eq('url', photoUrl)
-        .single();
-
-      if (!photoData) {
-        throw new Error('Photo not found');
-      }
-
       // Track the download
-      await supabase
-        .from('photo_downloads')
-        .insert({
-          photo_id: photoData.id,
-          session_id: sessionId
-        });
+      const photoData = getPhotoData(photoId);
+      photoData.downloads += 1;
+      savePhotoData(photoId, photoData);
 
       // Download the image
       const response = await fetch(photoUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       
+      const filename = photoUrl.split('/').pop() || `student_${studentId}_photo.jpg`;
       const link = document.createElement('a');
       link.href = url;
-      link.download = photoData.filename || `student_${studentId}_photo.jpg`;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -194,8 +127,11 @@ export const usePhotoInteractions = (photoId: string, studentId: number, photoUr
       // Update download count
       setStats(prev => ({
         ...prev,
-        downloadCount: prev.downloadCount + 1
+        downloadCount: photoData.downloads
       }));
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 300));
     } catch (err) {
       console.error('Error downloading photo:', err);
       setError('Failed to download photo');
