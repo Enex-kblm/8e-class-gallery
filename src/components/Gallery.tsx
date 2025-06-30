@@ -25,13 +25,12 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
     const savedFavorites = localStorage.getItem('favorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
-  const filteredAndSortedStudents = useMemo(() => {
+  const filteredStudents = useMemo(() => {
     let filtered = students.filter(student =>
       student.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -40,11 +39,9 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
       filtered = filtered.filter(student => favorites.includes(student.id));
     }
 
-    return filtered.sort((a, b) => {
-      const comparison = a.name.localeCompare(b.name);
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
-  }, [students, searchQuery, favorites, showFavoritesOnly, sortOrder]);
+    // Menampilkan siswa dalam urutan asli dari data (tidak ada sorting A-Z)
+    return filtered;
+  }, [students, searchQuery, favorites, showFavoritesOnly]);
 
   const handleStudentClick = (student: Student) => {
     setSelectedStudent(student);
@@ -116,8 +113,8 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
       <SearchAndFilter
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        sortOrder={sortOrder}
-        onSortChange={setSortOrder}
+        sortOrder="asc"
+        onSortChange={() => {}}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         showFavoritesOnly={showFavoritesOnly}
@@ -146,7 +143,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
         )}
 
         {/* Students Grid/List */}
-        {filteredAndSortedStudents.length === 0 ? (
+        {filteredStudents.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -175,7 +172,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
                 : 'space-y-4'
             }
           >
-            {filteredAndSortedStudents.map((student, index) => (
+            {filteredStudents.map((student, index) => (
               <StudentCard
                 key={student.id}
                 student={{ ...student, isFavorite: favorites.includes(student.id) }}
@@ -196,7 +193,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             animate={{ opacity: 1 }}
             className="text-center text-gray-500 mt-8"
           >
-            Menampilkan {filteredAndSortedStudents.length} dari {students.length} siswa
+            Menampilkan {filteredStudents.length} dari {students.length} siswa
           </motion.p>
         )}
       </div>

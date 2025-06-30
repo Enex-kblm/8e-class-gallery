@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Grid, List, SortAsc, SortDesc } from 'lucide-react';
+import { Search, Filter, Grid, List } from 'lucide-react';
 
 interface SearchAndFilterProps {
   searchQuery: string;
@@ -16,8 +16,6 @@ interface SearchAndFilterProps {
 export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
   searchQuery,
   onSearchChange,
-  sortOrder,
-  onSortChange,
   viewMode,
   onViewModeChange,
   showFavoritesOnly,
@@ -53,15 +51,6 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
               }`}
             >
               ❤️ Favorit
-            </button>
-
-            {/* Sort Order */}
-            <button
-              onClick={() => onSortChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-              title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
-            >
-              {sortOrder === 'asc' ? <SortAsc size={18} /> : <SortDesc size={18} />}
             </button>
 
             {/* View Mode Toggle */}
@@ -102,7 +91,7 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
             exit={{ opacity: 0, height: 0 }}
             className="mt-4 p-4 bg-gray-50 rounded-lg"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Jumlah Foto
@@ -122,16 +111,6 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
                   <option value="">Semua</option>
                   <option value="complete">Foto Lengkap</option>
                   <option value="placeholder">Placeholder</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nama
-                </label>
-                <select className="w-full p-2 border border-gray-200 rounded-lg">
-                  <option value="">A-Z</option>
-                  <option value="az">A-Z</option>
-                  <option value="za">Z-A</option>
                 </select>
               </div>
             </div>
