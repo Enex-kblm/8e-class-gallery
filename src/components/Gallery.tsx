@@ -39,7 +39,6 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
       filtered = filtered.filter(student => favorites.includes(student.id));
     }
 
-    // Menampilkan siswa dalam urutan asli dari data (tidak ada sorting A-Z)
     return filtered;
   }, [students, searchQuery, favorites, showFavoritesOnly]);
 
@@ -92,17 +91,17 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Galeri Kelas 8E</h1>
-            <p className="text-lg text-gray-600 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Galeri Kelas 8E</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
               Jelajahi kenangan dari siswa-siswi kami yang luar biasa
             </p>
           </motion.div>
@@ -149,13 +148,13 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             animate={{ opacity: 1 }}
             className="text-center py-16"
           >
-            <div className="text-gray-400 mb-4">
+            <div className="text-gray-400 dark:text-gray-500 mb-4">
               <Users size={48} className="mx-auto" />
             </div>
-            <h3 className="text-xl font-medium text-gray-600 mb-2">
+            <h3 className="text-xl font-medium text-gray-600 dark:text-gray-300 mb-2">
               {showFavoritesOnly ? 'Belum ada favorit' : 'Tidak ada siswa yang ditemukan'}
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {showFavoritesOnly 
                 ? 'Tambahkan siswa ke favorit dengan menekan tombol ❤️'
                 : 'Coba ubah kata kunci pencarian Anda'
@@ -191,7 +190,7 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center text-gray-500 mt-8"
+            className="text-center text-gray-500 dark:text-gray-400 mt-8"
           >
             Menampilkan {filteredStudents.length} dari {students.length} siswa
           </motion.p>

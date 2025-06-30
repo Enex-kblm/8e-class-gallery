@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { Gallery } from './components/Gallery';
 import { DeveloperInfo } from './components/DeveloperInfo';
+import { ThemeProvider } from './contexts/ThemeContext';
 import studentsData from './data/students.json';
-import groupPhotosData from './data/groupPhotos.json'; // Import data terpisah
+import groupPhotosData from './data/groupPhotos.json';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'gallery' | 'developer'>('gallery');
@@ -13,21 +14,23 @@ function App() {
 
   useEffect(() => {
     setStudents(studentsData.students);
-    setGroupPhotos(groupPhotosData); // Gunakan data dari file terpisah
+    setGroupPhotos(groupPhotosData);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
-      
-      <main>
-        {currentPage === 'gallery' ? (
-          <Gallery students={students} groupPhotos={groupPhotos} />
-        ) : (
-          <DeveloperInfo />
-        )}
-      </main>
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+        
+        <main>
+          {currentPage === 'gallery' ? (
+            <Gallery students={students} groupPhotos={groupPhotos} />
+          ) : (
+            <DeveloperInfo />
+          )}
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
 
