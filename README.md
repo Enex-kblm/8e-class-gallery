@@ -335,10 +335,6 @@ interface GroupPhoto {
 4. Test your changes thoroughly
 5. Submit a pull request with a clear description
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👨‍💻 Developer
 
 **Created with ❤️ for Class 8E**
