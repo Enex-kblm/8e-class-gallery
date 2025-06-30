@@ -43,17 +43,17 @@ export const StudentHorizontalScroll: React.FC<StudentHorizontalScrollProps> = (
         <div className="flex space-x-2">
           <button 
             onClick={() => handleScroll('left')}
-            className="p-2 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
+            className="p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             aria-label="Scroll left"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={18} className="text-gray-800 dark:text-white" />
           </button>
           <button 
             onClick={() => handleScroll('right')}
-            className="p-2 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
+            className="p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             aria-label="Scroll right"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={18} className="text-gray-800 dark:text-white" />
           </button>
         </div>
       </div>
@@ -72,7 +72,7 @@ export const StudentHorizontalScroll: React.FC<StudentHorizontalScrollProps> = (
               className="flex-shrink-0 w-40 cursor-pointer"
               onClick={() => onStudentClick(student)}
             >
-              <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
                 <div className="aspect-square relative overflow-hidden">
                   <LazyImage
                     src={student.photos[0]}
@@ -81,7 +81,7 @@ export const StudentHorizontalScroll: React.FC<StudentHorizontalScrollProps> = (
                   />
                 </div>
                 <div className="p-3">
-                  <h4 className="font-medium text-gray-900 text-center truncate">{student.name}</h4>
+                  <h4 className="font-medium text-gray-900 dark:text-white text-center truncate">{student.name}</h4>
                 </div>
               </div>
             </motion.div>
