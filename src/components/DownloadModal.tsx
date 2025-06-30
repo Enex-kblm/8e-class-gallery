@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Check, Image as ImageIcon, AlertCircle } from 'lucide-react';
+import { X, Download, Check, Image as ImageIcon, AlertCircle, ExternalLink } from 'lucide-react';
 import { Student } from '../types';
 
 interface DownloadModalProps {
@@ -37,37 +37,47 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
   const downloadImage = async (url: string, filename: string): Promise<boolean> => {
     try {
-      // Convert GitHub raw URL to proper download URL
-      const downloadUrl = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-      
-      const response = await fetch(downloadUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'image/*',
-        },
-      });
+      // Method 1: Try direct download with proper CORS handling
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Accept': 'image/*',
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (response.ok) {
+          const blob = await response.blob();
+          const downloadLink = document.createElement('a');
+          const objectUrl = URL.createObjectURL(blob);
+          
+          downloadLink.href = objectUrl;
+          downloadLink.download = filename;
+          downloadLink.style.display = 'none';
+          
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          
+          setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+          return true;
+        }
+      } catch (corsError) {
+        console.log('CORS method failed, trying alternative...');
       }
 
-      const blob = await response.blob();
+      // Method 2: Fallback - Open in new tab with download attribute
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
       
-      // Create download link
-      const downloadLink = document.createElement('a');
-      const objectUrl = URL.createObjectURL(blob);
-      
-      downloadLink.href = objectUrl;
-      downloadLink.download = filename;
-      downloadLink.style.display = 'none';
-      
-      // Trigger download
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      
-      // Clean up object URL
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      // Add download attribute and trigger click
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
       return true;
     } catch (error) {
@@ -97,6 +107,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
     });
     setDownloadProgress(newProgress);
     
+    let successCount = 0;
+    
     // Download each selected photo
     for (const photoIndex of selectedPhotos) {
       const photoUrl = student.photos[photoIndex];
@@ -112,25 +124,49 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
       
       const success = await downloadImage(photoUrl, filename);
       
+      if (success) {
+        successCount++;
+      }
+      
       // Update progress based on result
       setDownloadProgress(prev => ({
         ...prev,
         [photoIndex]: success ? 'success' : 'error'
       }));
       
-      // Small delay between downloads to prevent overwhelming the browser
+      // Small delay between downloads
       if (photoIndex !== selectedPhotos[selectedPhotos.length - 1]) {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
     
     setIsDownloading(false);
     
-    // Auto close modal after successful downloads
-    setTimeout(() => {
-      onClose();
-      setDownloadProgress({});
-    }, 2000);
+    // Show completion message
+    if (successCount === selectedPhotos.length) {
+      // All successful
+      setTimeout(() => {
+        onClose();
+        setDownloadProgress({});
+      }, 1500);
+    } else if (successCount > 0) {
+      // Partial success
+      setTimeout(() => {
+        setDownloadProgress({});
+      }, 3000);
+    }
+  };
+
+  const handleDirectDownload = () => {
+    if (!student || selectedPhotos.length === 0) return;
+    
+    // Open each selected photo in new tab for manual download
+    selectedPhotos.forEach((photoIndex) => {
+      const photoUrl = student.photos[photoIndex];
+      window.open(photoUrl, '_blank');
+    });
+    
+    onClose();
   };
 
   const getProgressIcon = (status: 'pending' | 'downloading' | 'success' | 'error') => {
@@ -147,6 +183,9 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   };
 
   if (!student) return null;
+
+  const hasErrors = Object.values(downloadProgress).some(status => status === 'error');
+  const successCount = Object.values(downloadProgress).filter(status => status === 'success').length;
 
   return (
     <AnimatePresence>
@@ -249,7 +288,22 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     <span>Mengunduh foto... Mohon tunggu</span>
                   </div>
                   <div className="mt-2 text-xs text-blue-600">
-                    {Object.values(downloadProgress).filter(status => status === 'success').length} dari {selectedPhotos.length} foto berhasil diunduh
+                    {successCount} dari {selectedPhotos.length} foto berhasil diunduh
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {hasErrors && !isDownloading && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <AlertCircle size={16} className="text-yellow-600 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="text-yellow-800 font-medium">Beberapa foto gagal diunduh</p>
+                      <p className="text-yellow-700 mt-1">
+                        Coba gunakan tombol "Buka di Tab Baru" untuk download manual
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -259,9 +313,18 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             <div className="flex items-center justify-between p-6 border-t bg-gray-50">
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <ImageIcon size={16} />
-                <span>{selectedPhotos.length} foto akan didownload</span>
+                <span>{selectedPhotos.length} foto dipilih</span>
               </div>
               <div className="flex space-x-3">
+                <button
+                  onClick={handleDirectDownload}
+                  disabled={selectedPhotos.length === 0 || isDownloading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-700 rounded-lg font-medium transition-colors"
+                >
+                  <ExternalLink size={16} />
+                  <span>Buka di Tab Baru</span>
+                </button>
+                
                 <button
                   onClick={onClose}
                   disabled={isDownloading}
@@ -269,6 +332,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 >
                   {isDownloading ? 'Mengunduh...' : 'Batal'}
                 </button>
+                
                 <button
                   onClick={handleDownload}
                   disabled={selectedPhotos.length === 0 || isDownloading}
@@ -277,7 +341,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   <Download size={16} />
                   <span>
                     {isDownloading 
-                      ? `Downloading... (${Object.values(downloadProgress).filter(s => s === 'success').length}/${selectedPhotos.length})`
+                      ? `Downloading... (${successCount}/${selectedPhotos.length})`
                       : 'Download'
                     }
                   </span>
