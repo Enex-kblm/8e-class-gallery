@@ -68,7 +68,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-gray-900 truncate">{student.name}</h3>
-            <p className="text-sm text-gray-500">Class 8E</p>
+            <p className="text-sm text-gray-500">Absen #{student.id}</p>
             <div className="flex items-center space-x-4 mt-2 text-xs text-gray-400">
               <span className="flex items-center space-x-1">
                 <Images size={12} />
@@ -198,7 +198,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
             {student.name}
           </h3>
           <p className="text-sm text-gray-500 text-center mt-1">
-            Class 8E
+            Absen #{student.id}
           </p>
           {hasRealPhotos && (
             <div className="flex justify-center mt-2">
