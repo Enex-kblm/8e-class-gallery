@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Check, Image as ImageIcon, AlertCircle, ExternalLink } from 'lucide-react';
+import { X, Download, Check, Image as ImageIcon, AlertCircle } from 'lucide-react';
 import { Student } from '../types';
 
 interface DownloadModalProps {
@@ -157,18 +157,6 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
     }
   };
 
-  const handleDirectDownload = () => {
-    if (!student || selectedPhotos.length === 0) return;
-    
-    // Open each selected photo in new tab for manual download
-    selectedPhotos.forEach((photoIndex) => {
-      const photoUrl = student.photos[photoIndex];
-      window.open(photoUrl, '_blank');
-    });
-    
-    onClose();
-  };
-
   const getProgressIcon = (status: 'pending' | 'downloading' | 'success' | 'error') => {
     switch (status) {
       case 'downloading':
@@ -301,7 +289,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     <div className="text-sm">
                       <p className="text-yellow-800 font-medium">Beberapa foto gagal diunduh</p>
                       <p className="text-yellow-700 mt-1">
-                        Coba gunakan tombol "Buka di Tab Baru" untuk download manual
+                        Silakan coba lagi atau periksa koneksi internet Anda
                       </p>
                     </div>
                   </div>
@@ -316,15 +304,6 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 <span>{selectedPhotos.length} foto dipilih</span>
               </div>
               <div className="flex space-x-3">
-                <button
-                  onClick={handleDirectDownload}
-                  disabled={selectedPhotos.length === 0 || isDownloading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 text-gray-700 rounded-lg font-medium transition-colors"
-                >
-                  <ExternalLink size={16} />
-                  <span>Buka di Tab Baru</span>
-                </button>
-                
                 <button
                   onClick={onClose}
                   disabled={isDownloading}
