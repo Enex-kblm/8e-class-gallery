@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Images, Heart } from 'lucide-react';
+import { Camera, Images, Heart, Download, Share2, User } from 'lucide-react';
 import { Student } from '../types';
 import { LazyImage } from './LazyImage';
 
@@ -9,13 +9,19 @@ interface StudentCardProps {
   index: number;
   onClick: () => void;
   onToggleFavorite: (studentId: number) => void;
+  onDownload?: () => void;
+  onShare?: (photoIndex: number) => void;
+  viewMode?: 'grid' | 'list';
 }
 
 export const StudentCard: React.FC<StudentCardProps> = ({ 
   student, 
   index, 
   onClick,
-  onToggleFavorite
+  onToggleFavorite,
+  onDownload,
+  onShare,
+  viewMode = 'grid'
 }) => {
   const [isFavorite, setIsFavorite] = useState(student.isFavorite || false);
 
@@ -24,6 +30,97 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     setIsFavorite(!isFavorite);
     onToggleFavorite(student.id);
   };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDownload?.();
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onShare?.(0);
+  };
+
+  const hasRealPhotos = student.photos.length > 0 && !student.photos[0].includes('catbox.moe');
+
+  if (viewMode === 'list') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3, delay: index * 0.05 }}
+        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100"
+      >
+        <div className="flex items-center p-4 space-x-4">
+          <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+            {hasRealPhotos ? (
+              <LazyImage
+                src={student.photos[0]}
+                alt={student.name}
+                className="w-full h-full"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <User size={24} className="text-gray-400" />
+              </div>
+            )}
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-gray-900 truncate">{student.name}</h3>
+            <p className="text-sm text-gray-500">Class 8E</p>
+            <div className="flex items-center space-x-4 mt-2 text-xs text-gray-400">
+              <span className="flex items-center space-x-1">
+                <Images size={12} />
+                <span>{student.photos.length} foto</span>
+              </span>
+              {hasRealPhotos && (
+                <span className="text-green-600 font-medium">✓ Lengkap</span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleToggleFavorite}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <Heart 
+                size={16} 
+                className={isFavorite ? "text-red-500 fill-red-500" : "text-gray-400"} 
+              />
+            </button>
+            
+            {hasRealPhotos && (
+              <>
+                <button
+                  onClick={handleDownload}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Download"
+                >
+                  <Download size={16} className="text-gray-600" />
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Share"
+                >
+                  <Share2 size={16} className="text-gray-600" />
+                </button>
+              </>
+            )}
+            
+            <button
+              onClick={onClick}
+              className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+            >
+              Lihat
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -35,33 +132,65 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     >
       <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
         <div className="aspect-square relative overflow-hidden">
-          <LazyImage
-            src={student.photos[0]}
-            alt={student.name}
-            className="w-full h-full group-hover:scale-105 transition-transform duration-500"
-          />
+          {hasRealPhotos ? (
+            <LazyImage
+              src={student.photos[0]}
+              alt={student.name}
+              className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <User size={48} className="text-gray-400" />
+            </div>
+          )}
           
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="absolute bottom-3 left-3 flex items-center space-x-1 text-white">
               <Images size={16} />
               <span className="text-sm font-medium">{student.photos.length} photos</span>
             </div>
+            
+            {hasRealPhotos && (
+              <div className="absolute bottom-3 right-3 flex space-x-2">
+                <button
+                  onClick={handleDownload}
+                  className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
+                  title="Download"
+                >
+                  <Download size={14} className="text-white" />
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
+                  title="Share"
+                >
+                  <Share2 size={14} className="text-white" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="absolute top-3 right-3 p-2 bg-white/20 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <Camera size={16} className="text-white" />
           </div>
 
-          {/* Tombol favorit */}
           <button 
             onClick={handleToggleFavorite}
-            className="absolute top-3 left-3 p-2 bg-white/20 backdrop-blur-sm rounded-full"
+            className="absolute top-3 left-3 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
           >
             <Heart 
               size={16} 
               className={isFavorite ? "text-red-500 fill-red-500" : "text-white"} 
             />
           </button>
+
+          {!hasRealPhotos && (
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+              <span className="text-white text-sm font-medium bg-black/50 px-2 py-1 rounded">
+                Coming Soon
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="p-4">
@@ -71,6 +200,13 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           <p className="text-sm text-gray-500 text-center mt-1">
             Class 8E
           </p>
+          {hasRealPhotos && (
+            <div className="flex justify-center mt-2">
+              <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
+                ✓ Foto Tersedia
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

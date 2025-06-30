@@ -1,11 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Users, Image as ImageIcon } from 'lucide-react';
+import { Users, Image as ImageIcon } from 'lucide-react';
 import { Student, GroupPhoto } from '../types';
 import { StudentCard } from './StudentCard';
 import { PhotoModal } from './PhotoModal';
 import { GroupPhotoCarousel } from './GroupPhotoCarousel';
 import { StudentHorizontalScroll } from './StudentHorizontalScroll';
+import { SearchAndFilter } from './SearchAndFilter';
+import { StudentStats } from './StudentStats';
+import { DownloadModal } from './DownloadModal';
+import { ShareModal } from './ShareModal';
 import featuredStudentsData from '../data/featuredStudents.json';
 
 interface GalleryProps {
@@ -21,12 +25,26 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
     const savedFavorites = localStorage.getItem('favorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
-  const filteredStudents = useMemo(() => {
-    return students.filter(student =>
+  const filteredAndSortedStudents = useMemo(() => {
+    let filtered = students.filter(student =>
       student.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [students, searchQuery]);
+
+    if (showFavoritesOnly) {
+      filtered = filtered.filter(student => favorites.includes(student.id));
+    }
+
+    return filtered.sort((a, b) => {
+      const comparison = a.name.localeCompare(b.name);
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  }, [students, searchQuery, favorites, showFavoritesOnly, sortOrder]);
 
   const handleStudentClick = (student: Student) => {
     setSelectedStudent(student);
@@ -65,7 +83,16 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
     });
   };
 
-  const totalPhotos = students.reduce((total, student) => total + student.photos.length, 0);
+  const handleDownload = (student: Student) => {
+    setSelectedStudent(student);
+    setDownloadModalOpen(true);
+  };
+
+  const handleShare = (student: Student, photoIndex: number = 0) => {
+    setSelectedStudent(student);
+    setCurrentPhotoIndex(photoIndex);
+    setShareModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -81,50 +108,45 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             <p className="text-lg text-gray-600 mb-6">
               Jelajahi kenangan dari siswa-siswi kami yang luar biasa
             </p>
-
-            <div className="flex justify-center space-x-8 mb-6">
-              <div className="flex items-center space-x-2 text-gray-600">
-                <Users size={20} />
-                <span className="font-medium">{students.length} Siswa</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-600">
-                <ImageIcon size={20} />
-                <span className="font-medium">{totalPhotos} Foto</span>
-              </div>
-            </div>
-
-            <div className="max-w-md mx-auto relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Telusuri siswa..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              />
-            </div>
           </motion.div>
         </div>
       </div>
 
-      {!searchQuery && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {groupPhotos.map(group => (
-            <GroupPhotoCarousel
-              key={group.id}
-              photos={group.photos}
-            />
-          ))}
-
-          <StudentHorizontalScroll
-            students={featuredStudentsData.featuredStudents}
-            onStudentClick={handleStudentClick}
-          />
-        </div>
-      )}
+      {/* Search and Filter */}
+      <SearchAndFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        sortOrder={sortOrder}
+        onSortChange={setSortOrder}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        showFavoritesOnly={showFavoritesOnly}
+        onToggleFavorites={() => setShowFavoritesOnly(!showFavoritesOnly)}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {filteredStudents.length === 0 ? (
+        {/* Stats */}
+        <StudentStats students={students} favorites={favorites} />
+
+        {/* Group Photos and Featured Students - only show when not searching */}
+        {!searchQuery && !showFavoritesOnly && (
+          <>
+            {groupPhotos.map(group => (
+              <GroupPhotoCarousel
+                key={group.id}
+                photos={group.photos}
+              />
+            ))}
+
+            <StudentHorizontalScroll
+              students={featuredStudentsData.featuredStudents}
+              onStudentClick={handleStudentClick}
+            />
+          </>
+        )}
+
+        {/* Students Grid/List */}
+        {filteredAndSortedStudents.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -133,45 +155,76 @@ export const Gallery: React.FC<GalleryProps> = ({ students, groupPhotos }) => {
             <div className="text-gray-400 mb-4">
               <Users size={48} className="mx-auto" />
             </div>
-            <h3 className="text-xl font-medium text-gray-600 mb-2">Tidak ada siswa yang ditemukan</h3>
+            <h3 className="text-xl font-medium text-gray-600 mb-2">
+              {showFavoritesOnly ? 'Belum ada favorit' : 'Tidak ada siswa yang ditemukan'}
+            </h3>
+            <p className="text-gray-500">
+              {showFavoritesOnly 
+                ? 'Tambahkan siswa ke favorit dengan menekan tombol ❤️'
+                : 'Coba ubah kata kunci pencarian Anda'
+              }
+            </p>
           </motion.div>
         ) : (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6"
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6'
+                : 'space-y-4'
+            }
           >
-            {filteredStudents.map((student, index) => (
+            {filteredAndSortedStudents.map((student, index) => (
               <StudentCard
                 key={student.id}
                 student={{ ...student, isFavorite: favorites.includes(student.id) }}
                 index={index}
                 onClick={() => handleStudentClick(student)}
                 onToggleFavorite={() => toggleFavorite(student.id)}
+                onDownload={() => handleDownload(student)}
+                onShare={(photoIndex) => handleShare(student, photoIndex)}
+                viewMode={viewMode}
               />
             ))}
           </motion.div>
         )}
 
-        {searchQuery && (
+        {(searchQuery || showFavoritesOnly) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center text-gray-500 mt-8"
           >
-            Showing {filteredStudents.length} of {students.length} students
+            Menampilkan {filteredAndSortedStudents.length} dari {students.length} siswa
           </motion.p>
         )}
       </div>
 
+      {/* Modals */}
       <PhotoModal
-        isOpen={selectedStudent !== null}
+        isOpen={selectedStudent !== null && !downloadModalOpen && !shareModalOpen}
         onClose={handleCloseModal}
         photos={selectedStudent?.photos || []}
         currentIndex={currentPhotoIndex}
         studentName={selectedStudent?.name || ''}
         onPrevious={handlePreviousPhoto}
         onNext={handleNextPhoto}
+        onDownload={() => setDownloadModalOpen(true)}
+        onShare={() => setShareModalOpen(true)}
+      />
+
+      <DownloadModal
+        isOpen={downloadModalOpen}
+        onClose={() => setDownloadModalOpen(false)}
+        student={selectedStudent}
+      />
+
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        student={selectedStudent}
+        photoIndex={currentPhotoIndex}
       />
     </div>
   );
