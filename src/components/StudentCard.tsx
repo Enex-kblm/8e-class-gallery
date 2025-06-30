@@ -49,7 +49,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
       >
         <div className="flex items-center p-4 space-x-4">
           <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
@@ -60,22 +60,22 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                 className="w-full h-full"
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <User size={24} className="text-gray-400" />
+              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                <User size={24} className="text-gray-400 dark:text-gray-500" />
               </div>
             )}
           </div>
           
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 truncate">{student.name}</h3>
-            <p className="text-sm text-gray-500">Absen #{student.id}</p>
-            <div className="flex items-center space-x-4 mt-2 text-xs text-gray-400">
+            <h3 className="font-semibold text-gray-900 dark:text-white truncate">{student.name}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Absen #{student.id}</p>
+            <div className="flex items-center space-x-4 mt-2 text-xs text-gray-400 dark:text-gray-500">
               <span className="flex items-center space-x-1">
                 <Images size={12} />
                 <span>{student.photos.length} foto</span>
               </span>
               {hasRealPhotos && (
-                <span className="text-green-600 font-medium">✓ Lengkap</span>
+                <span className="text-green-600 dark:text-green-400 font-medium">✓ Lengkap</span>
               )}
             </div>
           </div>
@@ -83,11 +83,11 @@ export const StudentCard: React.FC<StudentCardProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={handleToggleFavorite}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <Heart 
                 size={16} 
-                className={isFavorite ? "text-red-500 fill-red-500" : "text-gray-400"} 
+                className={isFavorite ? "text-red-500 fill-red-500" : "text-gray-400 dark:text-gray-500"} 
               />
             </button>
             
@@ -95,24 +95,24 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               <>
                 <button
                   onClick={handleDownload}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Download"
                 >
-                  <Download size={16} className="text-gray-600" />
+                  <Download size={16} className="text-gray-600 dark:text-gray-300" />
                 </button>
                 <button
                   onClick={handleShare}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   title="Share"
                 >
-                  <Share2 size={16} className="text-gray-600" />
+                  <Share2 size={16} className="text-gray-600 dark:text-gray-300" />
                 </button>
               </>
             )}
             
             <button
               onClick={onClick}
-              className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+              className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 hover:bg-blue-200 dark:hover:bg-blue-800/50 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium transition-colors"
             >
               Lihat
             </button>
@@ -130,7 +130,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
       className="group cursor-pointer"
       onClick={onClick}
     >
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
         <div className="aspect-square relative overflow-hidden">
           {hasRealPhotos ? (
             <LazyImage
@@ -139,8 +139,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
               className="w-full h-full group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <User size={48} className="text-gray-400" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+              <User size={48} className="text-gray-400 dark:text-gray-500" />
             </div>
           )}
           
@@ -194,15 +194,15 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         </div>
 
         <div className="p-4">
-          <h3 className="font-semibold text-gray-900 text-center group-hover:text-blue-600 transition-colors duration-200">
+          <h3 className="font-semibold text-gray-900 dark:text-white text-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
             {student.name}
           </h3>
-          <p className="text-sm text-gray-500 text-center mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">
             Absen #{student.id}
           </p>
           {hasRealPhotos && (
             <div className="flex justify-center mt-2">
-              <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
+              <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full font-medium">
                 ✓ Foto Tersedia
               </span>
             </div>

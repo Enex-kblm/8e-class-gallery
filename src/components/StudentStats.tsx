@@ -20,25 +20,33 @@ export const StudentStats: React.FC<StudentStatsProps> = ({ students, favorites 
       icon: <Users size={24} />,
       label: 'Total Siswa',
       value: students.length,
-      color: 'bg-blue-500',
+      color: 'bg-blue-500 dark:bg-blue-600',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      textColor: 'text-blue-700 dark:text-blue-300',
     },
     {
       icon: <ImageIcon size={24} />,
       label: 'Total Foto',
       value: totalPhotos,
-      color: 'bg-green-500',
+      color: 'bg-green-500 dark:bg-green-600',
+      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      textColor: 'text-green-700 dark:text-green-300',
     },
     {
       icon: <Heart size={24} />,
       label: 'Favorit',
       value: favorites.length,
-      color: 'bg-red-500',
+      color: 'bg-red-500 dark:bg-red-600',
+      bgColor: 'bg-red-50 dark:bg-red-900/20',
+      textColor: 'text-red-700 dark:text-red-300',
     },
     {
       icon: <Camera size={24} />,
       label: 'Kelengkapan',
       value: `${completionRate}%`,
-      color: 'bg-purple-500',
+      color: 'bg-purple-500 dark:bg-purple-600',
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      textColor: 'text-purple-700 dark:text-purple-300',
     },
   ];
 
@@ -50,15 +58,15 @@ export const StudentStats: React.FC<StudentStatsProps> = ({ students, favorites 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
+          className={`${stat.bgColor} rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 transition-colors duration-300`}
         >
           <div className="flex items-center space-x-3">
-            <div className={`${stat.color} p-2 rounded-lg text-white`}>
+            <div className={`${stat.color} p-2 rounded-lg text-white shadow-sm`}>
               {stat.icon}
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-sm text-gray-600">{stat.label}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+              <p className={`text-sm ${stat.textColor} font-medium`}>{stat.label}</p>
             </div>
           </div>
         </motion.div>

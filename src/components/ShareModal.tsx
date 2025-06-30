@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Share2, Copy, Check, Facebook, Twitter, Instagram, MessageCircle } from 'lucide-react';
+import { X, Share2, Copy, Check, Facebook, Twitter, MessageCircle } from 'lucide-react';
 import { Student } from '../types';
 
 interface ShareModalProps {
@@ -72,25 +72,25 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Share2 size={20} className="text-blue-600" />
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                  <Share2 size={20} className="text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Bagikan Foto</h3>
-                  <p className="text-sm text-gray-600">{student.name}</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Bagikan Foto</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{student.name}</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
-                <X size={20} />
+                <X size={20} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
@@ -105,14 +105,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                   Foto {photoIndex + 1} dari {student.photos.length}
                 </p>
               </div>
 
               {/* Share Options */}
               <div className="space-y-3 mb-6">
-                <p className="text-sm font-medium text-gray-700">Bagikan ke:</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Bagikan ke:</p>
                 <div className="grid grid-cols-3 gap-3">
                   {shareOptions.map((option) => (
                     <button
@@ -129,27 +129,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
               {/* Copy Link */}
               <div className="space-y-3">
-                <p className="text-sm font-medium text-gray-700">Atau salin link:</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Atau salin link:</p>
                 <div className="flex space-x-2">
                   <input
                     type="text"
                     value={shareUrl}
                     readOnly
-                    className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm"
+                    className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
                   />
                   <button
                     onClick={copyToClipboard}
                     className={`px-4 py-3 rounded-lg font-medium transition-colors ${
                       copied
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                        ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
+                        : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
                     }`}
                   >
                     {copied ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>
                 {copied && (
-                  <p className="text-sm text-green-600">Link berhasil disalin!</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">Link berhasil disalin!</p>
                 )}
               </div>
             </div>

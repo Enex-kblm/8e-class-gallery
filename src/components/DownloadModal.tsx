@@ -189,25 +189,25 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Download Foto - {student.name}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Pilih foto yang ingin didownload
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 disabled={isDownloading}
               >
-                <X size={20} />
+                <X size={20} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
@@ -218,11 +218,11 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 <button
                   onClick={selectAllPhotos}
                   disabled={isDownloading}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium disabled:text-gray-400 dark:disabled:text-gray-500"
                 >
                   {selectedPhotos.length === student.photos.length ? 'Deselect All' : 'Select All'}
                 </button>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
                   {selectedPhotos.length} dari {student.photos.length} foto dipilih
                 </span>
               </div>
@@ -234,8 +234,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     key={index}
                     className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
                       selectedPhotos.includes(index)
-                        ? 'border-blue-500 ring-2 ring-blue-200'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-800'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                     } ${isDownloading ? 'pointer-events-none' : ''}`}
                     onClick={() => !isDownloading && togglePhotoSelection(index)}
                   >
@@ -256,7 +256,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     
                     {/* Download progress indicator */}
                     {downloadProgress[index] && (
-                      <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md">
+                      <div className="absolute top-2 right-2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md">
                         {getProgressIcon(downloadProgress[index])}
                       </div>
                     )}
@@ -270,12 +270,12 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
               {/* Download Progress */}
               {isDownloading && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-blue-700">
+                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div className="flex items-center space-x-2 text-sm text-blue-700 dark:text-blue-300">
                     <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full" />
                     <span>Mengunduh foto... Mohon tunggu</span>
                   </div>
-                  <div className="mt-2 text-xs text-blue-600">
+                  <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
                     {successCount} dari {selectedPhotos.length} foto berhasil diunduh
                   </div>
                 </div>
@@ -283,12 +283,12 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
               {/* Error Message */}
               {hasErrors && !isDownloading && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                   <div className="flex items-start space-x-2">
-                    <AlertCircle size={16} className="text-yellow-600 mt-0.5" />
+                    <AlertCircle size={16} className="text-yellow-600 dark:text-yellow-400 mt-0.5" />
                     <div className="text-sm">
-                      <p className="text-yellow-800 font-medium">Beberapa foto gagal diunduh</p>
-                      <p className="text-yellow-700 mt-1">
+                      <p className="text-yellow-800 dark:text-yellow-200 font-medium">Beberapa foto gagal diunduh</p>
+                      <p className="text-yellow-700 dark:text-yellow-300 mt-1">
                         Silakan coba lagi atau periksa koneksi internet Anda
                       </p>
                     </div>
@@ -298,8 +298,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <div className="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                 <ImageIcon size={16} />
                 <span>{selectedPhotos.length} foto dipilih</span>
               </div>
@@ -307,7 +307,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 <button
                   onClick={onClose}
                   disabled={isDownloading}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-700 font-medium disabled:text-gray-400"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium disabled:text-gray-400 dark:disabled:text-gray-500"
                 >
                   {isDownloading ? 'Mengunduh...' : 'Batal'}
                 </button>
@@ -315,7 +315,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 <button
                   onClick={handleDownload}
                   disabled={selectedPhotos.length === 0 || isDownloading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg font-medium transition-colors"
                 >
                   <Download size={16} />
                   <span>

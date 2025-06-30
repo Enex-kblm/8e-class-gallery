@@ -133,7 +133,7 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
             )}
 
             {/* Image container */}
-            <div className="relative bg-white rounded-lg overflow-hidden shadow-2xl">
+            <div className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
               <div className="aspect-[3/4] max-h-[80vh]">
                 <LazyImage
                   src={photos[currentIndex]}
@@ -143,18 +143,18 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
               </div>
               
               {/* Photo info */}
-              <div className="p-4 bg-white">
+              <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{studentName}</h3>
-                    <p className="text-sm text-gray-500">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{studentName}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Photo {currentIndex + 1} of {photos.length}
                     </p>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                      <Heart size={18} className="text-gray-400" />
+                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                      <Heart size={18} className="text-gray-400 dark:text-gray-500" />
                     </button>
                   </div>
                 </div>
@@ -162,14 +162,16 @@ export const PhotoModal: React.FC<PhotoModalProps> = ({
 
               {/* Thumbnail navigation */}
               {photos.length > 1 && (
-                <div className="p-4 bg-gray-50 border-t">
+                <div className="p-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-600">
                   <div className="flex space-x-2 overflow-x-auto">
                     {photos.map((photo, index) => (
                       <button
                         key={index}
                         onClick={() => {/* This would be handled by parent component */}}
                         className={`flex-shrink-0 w-16 h-20 rounded overflow-hidden border-2 transition-colors ${
-                          index === currentIndex ? 'border-blue-500' : 'border-gray-200'
+                          index === currentIndex 
+                            ? 'border-blue-500 dark:border-blue-400' 
+                            : 'border-gray-200 dark:border-gray-600'
                         }`}
                       >
                         <LazyImage
