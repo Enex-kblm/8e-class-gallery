@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Share2, Copy, Check, Facebook, Twitter, MessageCircle } from 'lucide-react';
+import { X, Share2, Copy, Check, Facebook, Twitter, MessageCircle, ExternalLink } from 'lucide-react';
 import { Student } from '../types';
+import { useUrlParams } from '../hooks/useUrlParams';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -17,17 +18,25 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   photoIndex = 0,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [copiedDirect, setCopiedDirect] = useState(false);
+  const { generateShareUrl } = useUrlParams();
 
   if (!student) return null;
 
-  const shareUrl = `${window.location.origin}?student=${student.id}&photo=${photoIndex}`;
+  const shareUrl = generateShareUrl(student.id, photoIndex, false);
+  const directShareUrl = generateShareUrl(student.id, photoIndex, true);
   const shareText = `Lihat foto ${student.name} di Galeri Kelas 8E`;
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = async (url: string, isDirect: boolean = false) => {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(url);
+      if (isDirect) {
+        setCopiedDirect(true);
+        setTimeout(() => setCopiedDirect(false), 2000);
+      } else {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     } catch (err) {
       console.error('Failed to copy: ', err);
     }
@@ -58,6 +67,23 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     window.open(url, '_blank', 'width=600,height=400');
   };
 
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Foto ${student.name} - Galeri Kelas 8E`,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Native share failed:', err);
+        await copyToClipboard(shareUrl);
+      }
+    } else {
+      await copyToClipboard(shareUrl);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -72,7 +98,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -110,9 +136,20 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 </p>
               </div>
 
+              {/* Quick Share */}
+              <div className="mb-6">
+                <button
+                  onClick={handleNativeShare}
+                  className="w-full flex items-center justify-center space-x-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  <Share2 size={18} />
+                  <span>Bagikan Sekarang</span>
+                </button>
+              </div>
+
               {/* Share Options */}
               <div className="space-y-3 mb-6">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Bagikan ke:</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Bagikan ke platform:</p>
                 <div className="grid grid-cols-3 gap-3">
                   {shareOptions.map((option) => (
                     <button
@@ -127,9 +164,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 </div>
               </div>
 
-              {/* Copy Link */}
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Atau salin link:</p>
+              {/* Gallery Link */}
+              <div className="space-y-3 mb-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Link galeri (dengan navigasi):</p>
                 <div className="flex space-x-2">
                   <input
                     type="text"
@@ -138,7 +175,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
                   />
                   <button
-                    onClick={copyToClipboard}
+                    onClick={() => copyToClipboard(shareUrl)}
                     className={`px-4 py-3 rounded-lg font-medium transition-colors ${
                       copied
                         ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
@@ -149,8 +186,43 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   </button>
                 </div>
                 {copied && (
-                  <p className="text-sm text-green-600 dark:text-green-400">Link berhasil disalin!</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">✓ Link galeri disalin!</p>
                 )}
+              </div>
+
+              {/* Direct Link */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Link langsung (foto saja):</p>
+                  <div className="flex items-center space-x-1 text-xs text-blue-600 dark:text-blue-400">
+                    <ExternalLink size={12} />
+                    <span>Direct</span>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={directShareUrl}
+                    readOnly
+                    className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(directShareUrl, true)}
+                    className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                      copiedDirect
+                        ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
+                        : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {copiedDirect ? <Check size={16} /> : <Copy size={16} />}
+                  </button>
+                </div>
+                {copiedDirect && (
+                  <p className="text-sm text-green-600 dark:text-green-400">✓ Link langsung disalin!</p>
+                )}
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Link langsung akan membuka foto dalam tampilan penuh tanpa navigasi galeri
+                </p>
               </div>
             </div>
           </motion.div>
