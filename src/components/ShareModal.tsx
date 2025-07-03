@@ -47,19 +47,19 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       name: 'WhatsApp',
       icon: <MessageCircle size={20} />,
       color: 'bg-green-500 hover:bg-green-600',
-      url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`,
+      url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + directShareUrl)}`,
     },
     {
       name: 'Facebook',
       icon: <Facebook size={20} />,
       color: 'bg-blue-600 hover:bg-blue-700',
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(directShareUrl)}`,
     },
     {
       name: 'Twitter',
       icon: <Twitter size={20} />,
       color: 'bg-sky-500 hover:bg-sky-600',
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(directShareUrl)}`,
     },
   ];
 
@@ -164,36 +164,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 </div>
               </div>
 
-              {/* Gallery Link */}
-              <div className="space-y-3 mb-4">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Link galeri (dengan navigasi):</p>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={shareUrl}
-                    readOnly
-                    className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
-                  />
-                  <button
-                    onClick={() => copyToClipboard(shareUrl)}
-                    className={`px-4 py-3 rounded-lg font-medium transition-colors ${
-                      copied
-                        ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
-                        : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    {copied ? <Check size={16} /> : <Copy size={16} />}
-                  </button>
-                </div>
-                {copied && (
-                  <p className="text-sm text-green-600 dark:text-green-400">✓ Link galeri disalin!</p>
-                )}
-              </div>
-
               {/* Direct Link */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Link langsung (foto saja):</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Direct link:</p>
                   <div className="flex items-center space-x-1 text-xs text-blue-600 dark:text-blue-400">
                     <ExternalLink size={12} />
                     <span>Direct</span>
@@ -220,9 +194,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 {copiedDirect && (
                   <p className="text-sm text-green-600 dark:text-green-400">✓ Link langsung disalin!</p>
                 )}
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Link langsung akan membuka foto dalam tampilan penuh tanpa navigasi galeri
-                </p>
               </div>
             </div>
           </motion.div>
