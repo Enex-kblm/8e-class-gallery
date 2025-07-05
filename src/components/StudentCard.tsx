@@ -41,7 +41,11 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     onShare?.(0);
   };
 
-  const hasRealPhotos = student.photos.length > 0 && !student.photos[0].includes('catbox.moe');
+  // Updated logic: Check if student has any photos with valid URLs
+  const hasRealPhotos = student.photos.length > 0 && 
+    student.photos[0] && 
+    student.photos[0].trim() !== '' &&
+    !student.photos[0].includes('dhy9t7.png'); // Only exclude the specific placeholder image
 
   if (viewMode === 'list') {
     return (
